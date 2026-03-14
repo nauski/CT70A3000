@@ -6,6 +6,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
+DB_PATH = os.path.join(BASE_DIR, "ims.db")
 
 class categoryClass:
     def __init__(self,root):
@@ -63,7 +64,7 @@ class categoryClass:
         self.lbl_im2.place(x=580,y=220)
 #----------------------------------------------------------------------------------
     def add(self):
-        con=sqlite3.connect(database=r'ims.db')
+        con=sqlite3.connect(database=DB_PATH)
         cur=con.cursor()
         try:
             if self.var_name.get()=="":
@@ -85,7 +86,7 @@ class categoryClass:
             messagebox.showerror("Error",f"Error due to : {str(ex)}")
 
     def show(self):
-        con=sqlite3.connect(database=r'ims.db')
+        con=sqlite3.connect(database=DB_PATH)
         cur=con.cursor()
         try:
             cur.execute("select * from category")
@@ -109,7 +110,7 @@ class categoryClass:
         self.var_name.set(row[1])
     
     def delete(self):
-        con=sqlite3.connect(database=r'ims.db')
+        con=sqlite3.connect(database=DB_PATH)
         cur=con.cursor()
         try:
             if self.var_cat_id.get()=="":
