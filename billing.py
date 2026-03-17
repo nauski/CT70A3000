@@ -6,6 +6,13 @@ import time
 import os
 import tempfile
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGE_DIR = os.path.join(BASE_DIR, "images")
+BILL_DIR = os.path.join(BASE_DIR, "bill")
+DB_PATH = os.path.join(BASE_DIR, "ims.db")
+
+os.makedirs(BILL_DIR, exist_ok=True)
+
 class billClass:
     def __init__(self,root):
         self.root=root
@@ -16,7 +23,7 @@ class billClass:
         self.chk_print=0
 
         #------------- title --------------
-        self.icon_title=PhotoImage(file="images/logo1.png")
+        self.icon_title=PhotoImage(file=os.path.join(IMAGE_DIR, "logo1.png"))
         title=Label(self.root,text="Inventory Management System",image=self.icon_title,compound=LEFT,font=("times new roman",40,"bold"),bg="#010c48",fg="white",anchor="w",padx=20).place(x=0,y=0,relwidth=1,height=70)
 
         #------------ logout button -----------
@@ -220,7 +227,7 @@ class billClass:
         self.var_cal_input.set(eval(result))
 
     def show(self):
-        con=sqlite3.connect(database=r'ims.db')
+        con=sqlite3.connect(database=DB_PATH)
         cur=con.cursor()
         try:
             cur.execute("select pid,name,price,qty,status from product where status='Active'")
@@ -232,7 +239,7 @@ class billClass:
             messagebox.showerror("Error",f"Error due to : {str(ex)}")
 
     def search(self):
-        con=sqlite3.connect(database=r'ims.db')
+        con=sqlite3.connect(database=DB_PATH)
         cur=con.cursor()
         try:
             if self.var_search.get()=="":
@@ -337,7 +344,7 @@ class billClass:
             #--------- bill bottom --------------
             self.bill_bottom()
 
-            fp=open(f'bill/{str(self.invoice)}.txt','w')
+            fp=open(os.path.join(BILL_DIR, f'{str(self.invoice)}.txt'),'w')
             fp.write(self.txt_bill_area.get('1.0',END))
             fp.close()
             messagebox.showinfo("Saved","Bill has been generated",parent=self.root)
@@ -370,7 +377,7 @@ class billClass:
         self.txt_bill_area.insert(END,bill_bottom_temp)
 
     def bill_middle(self):
-        con=sqlite3.connect(database=r'ims.db')
+        con=sqlite3.connect(database=DB_PATH)
         cur=con.cursor()
         try:
             for row in self.cart_list:
