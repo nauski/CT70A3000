@@ -15,6 +15,7 @@ from sales import salesClass
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
 BILL_DIR = os.path.join(BASE_DIR, "bill")
+DB_PATH = os.path.join(BASE_DIR, "ims.db")
 
 os.makedirs(BILL_DIR, exist_ok=True)
 # ---------------------------------------------------
@@ -192,7 +193,7 @@ class IMS:
         self.new_obj = salesClass(self.new_win)
 
     def update_content(self):
-        con = sqlite3.connect(database=os.path.join(BASE_DIR, 'ims.db'))
+        con = sqlite3.connect(database=DB_PATH)
         cur = con.cursor()
 
         try:
