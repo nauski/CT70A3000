@@ -1,15 +1,14 @@
 from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
-import sqlite3
 import time
 import os
 import tempfile
+from db import get_db
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
 BILL_DIR = os.path.join(BASE_DIR, "bill")
-DB_PATH = os.path.join(BASE_DIR, "ims.db")
 
 os.makedirs(BILL_DIR, exist_ok=True)
 
@@ -227,11 +226,10 @@ class billClass:
         self.var_cal_input.set(eval(result))
 
     def show(self):
-        con=sqlite3.connect(database=DB_PATH)
-        cur=con.cursor()
         try:
-            cur.execute("select pid,name,price,qty,status from product where status='Active'")
-            rows=cur.fetchall()
+            with get_db() as (con, cur):
+                cur.execute("select pid,name,price,qty,status from product where status='Active'")
+                rows=cur.fetchall()
             self.product_Table.delete(*self.product_Table.get_children())
             for row in rows:
                 self.product_Table.insert('',END,values=row)
@@ -239,14 +237,13 @@ class billClass:
             messagebox.showerror("Error",f"Error due to : {str(ex)}")
 
     def search(self):
-        con=sqlite3.connect(database=DB_PATH)
-        cur=con.cursor()
         try:
             if self.var_search.get()=="":
                 messagebox.showerror("Error","Search input should be required",parent=self.root)
             else:
-                cur.execute("select pid,name,price,qty,status from product where name LIKE '%"+self.var_search.get()+"%'")
-                rows=cur.fetchall()
+                with get_db() as (con, cur):
+                    cur.execute("select pid,name,price,qty,status from product where name LIKE '%"+self.var_search.get()+"%'")
+                    rows=cur.fetchall()
                 if len(rows)!=0:
                     self.product_Table.delete(*self.product_Table.get_children())
                     for row in rows:
@@ -377,28 +374,26 @@ class billClass:
         self.txt_bill_area.insert(END,bill_bottom_temp)
 
     def bill_middle(self):
-        con=sqlite3.connect(database=DB_PATH)
-        cur=con.cursor()
         try:
-            for row in self.cart_list:
-                pid=row[0]
-                name=row[1]
-                qty=int(row[4])-int(row[3])
-                if int(row[3])==int(row[4]):
-                    status="Inactive"
-                if int(row[3])!=int(row[4]):
-                    status="Active"
-                price=float(row[2])*int(row[3])
-                price=str(price)
-                self.txt_bill_area.insert(END,"\n "+name+"\t\t\t"+row[3]+"\tRs."+price)
-                #------------- update qty in product table --------------
-                cur.execute("update product set qty=?,status=? where pid=?",(
-                    qty,
-                    status,
-                    pid
-                ))
-                con.commit()
-            con.close()
+            with get_db() as (con, cur):
+                for row in self.cart_list:
+                    pid=row[0]
+                    name=row[1]
+                    qty=int(row[4])-int(row[3])
+                    if int(row[3])==int(row[4]):
+                        status="Inactive"
+                    if int(row[3])!=int(row[4]):
+                        status="Active"
+                    price=float(row[2])*int(row[3])
+                    price=str(price)
+                    self.txt_bill_area.insert(END,"\n "+name+"\t\t\t"+row[3]+"\tRs."+price)
+                    #------------- update qty in product table --------------
+                    cur.execute("update product set qty=?,status=? where pid=?",(
+                        qty,
+                        status,
+                        pid
+                    ))
+                    con.commit()
             self.show()
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
