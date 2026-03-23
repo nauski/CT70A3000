@@ -242,8 +242,13 @@ class productClass:
             elif self.var_searchtxt.get()=="":
                 messagebox.showerror("Error","Search input should be required",parent=self.root)
             else:
+                allowed_columns={"Category":"Category","Supplier":"Supplier","Name":"name"}
+                col=allowed_columns.get(self.var_searchby.get())
+                if col is None:
+                    messagebox.showerror("Error","Invalid search option",parent=self.root)
+                    return
                 with get_db() as (con, cur):
-                    cur.execute("select * from product where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
+                    cur.execute(f"select * from product where {col} LIKE ?", (f"%{self.var_searchtxt.get()}%",))
                     rows=cur.fetchall()
                 if len(rows)!=0:
                     self.ProductTable.delete(*self.ProductTable.get_children())
