@@ -242,7 +242,7 @@ class billClass:
                 messagebox.showerror("Error","Search input should be required",parent=self.root)
             else:
                 with get_db() as (con, cur):
-                    cur.execute("select pid,name,price,qty,status from product where name LIKE '%"+self.var_search.get()+"%'")
+                    cur.execute("select pid,name,price,qty,status from product where name LIKE ?", (f"%{self.var_search.get()}%",))
                     rows=cur.fetchall()
                 if len(rows)!=0:
                     self.product_Table.delete(*self.product_Table.get_children())
