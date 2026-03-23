@@ -259,8 +259,13 @@ class employeeClass:
             elif self.var_searchtxt.get()=="":
                 messagebox.showerror("Error","Search input should be required",parent=self.root)
             else:
+                allowed_columns={"Email":"email","Name":"name","Contact":"contact"}
+                col=allowed_columns.get(self.var_searchby.get())
+                if col is None:
+                    messagebox.showerror("Error","Invalid search option",parent=self.root)
+                    return
                 with get_db() as (con, cur):
-                    cur.execute("select * from employee where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
+                    cur.execute(f"select * from employee where {col} LIKE ?", (f"%{self.var_searchtxt.get()}%",))
                     rows=cur.fetchall()
                 if len(rows)!=0:
                     self.EmployeeTable.delete(*self.EmployeeTable.get_children())
