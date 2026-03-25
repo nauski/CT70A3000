@@ -3,7 +3,7 @@ from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 from db import get_db
 
-class employeeClass:
+class Employee:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1100x500+320+220")
@@ -279,5 +279,5 @@ class employeeClass:
 
 if __name__=="__main__":
     root=Tk()
-    obj=employeeClass(root)
+    obj=Employee(root)
     root.mainloop()

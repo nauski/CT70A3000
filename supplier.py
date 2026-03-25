@@ -3,7 +3,7 @@ from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 from db import get_db
 
-class supplierClass:
+class Supplier:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1100x500+320+220")
@@ -194,5 +194,5 @@ class supplierClass:
 
 if __name__=="__main__":
     root=Tk()
-    obj=supplierClass(root)
+    obj=Supplier(root)
     root.mainloop()
