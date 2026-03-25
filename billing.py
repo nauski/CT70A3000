@@ -223,7 +223,13 @@ class billClass:
 
     def perform_cal(self):
         result=self.var_cal_input.get()
-        self.var_cal_input.set(eval(result))
+        if result and all(c in '0123456789+-*/.' for c in result):
+            try:
+                self.var_cal_input.set(str(eval(result)))
+            except Exception:
+                self.var_cal_input.set('Error')
+        else:
+            self.var_cal_input.set('Error')
 
     def show(self):
         try:
