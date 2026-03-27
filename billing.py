@@ -5,6 +5,7 @@ import time
 import os
 import tempfile
 from db import get_db
+from ui_helpers import create_treeview
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
@@ -53,26 +54,13 @@ class Billing:
         ProductFrame3=Frame(ProductFrame1,bd=3,relief=RIDGE)
         ProductFrame3.place(x=2,y=140,width=398,height=375)
 
-        scrolly=Scrollbar(ProductFrame3,orient=VERTICAL)
-        scrollx=Scrollbar(ProductFrame3,orient=HORIZONTAL)\
-        
-        self.product_Table=ttk.Treeview(ProductFrame3,columns=("pid","name","price","qty","status"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
-        scrollx.pack(side=BOTTOM,fill=X)
-        scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.product_Table.xview)
-        scrolly.config(command=self.product_Table.yview)
-        self.product_Table.heading("pid",text="P ID")
-        self.product_Table.heading("name",text="Name")
-        self.product_Table.heading("price",text="Price")
-        self.product_Table.heading("qty",text="Quantity")
-        self.product_Table.heading("status",text="Status")
-        self.product_Table["show"]="headings"
-        self.product_Table.column("pid",width=40)
-        self.product_Table.column("name",width=100)
-        self.product_Table.column("price",width=100)
-        self.product_Table.column("qty",width=40)
-        self.product_Table.column("status",width=90)
-        self.product_Table.pack(fill=BOTH,expand=1)
+        self.product_Table=create_treeview(ProductFrame3,[
+            ("pid","P ID",40),
+            ("name","Name",100),
+            ("price","Price",100),
+            ("qty","Quantity",40),
+            ("status","Status",90),
+        ])
         self.product_Table.bind("<ButtonRelease-1>",self.get_data)
         self.show()
 
@@ -131,24 +119,12 @@ class Billing:
         self.cartTitle=Label(Cart_Frame,text="Cart \t Total Products: [0]",font=("goudy old style",15),bg="lightgray")
         self.cartTitle.pack(side=TOP,fill=X)
 
-        scrolly=Scrollbar(Cart_Frame,orient=VERTICAL)
-        scrollx=Scrollbar(Cart_Frame,orient=HORIZONTAL)\
-        
-        self.CartTable=ttk.Treeview(Cart_Frame,columns=("pid","name","price","qty"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
-        scrollx.pack(side=BOTTOM,fill=X)
-        scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.CartTable.xview)
-        scrolly.config(command=self.CartTable.yview)
-        self.CartTable.heading("pid",text="P ID")
-        self.CartTable.heading("name",text="Name")
-        self.CartTable.heading("price",text="Price")
-        self.CartTable.heading("qty",text="Quantity")
-        self.CartTable["show"]="headings"
-        self.CartTable.column("pid",width=40)
-        self.CartTable.column("name",width=100)
-        self.CartTable.column("price",width=90)
-        self.CartTable.column("qty",width=30)
-        self.CartTable.pack(fill=BOTH,expand=1)
+        self.CartTable=create_treeview(Cart_Frame,[
+            ("pid","P ID",40),
+            ("name","Name",100),
+            ("price","Price",90),
+            ("qty","Quantity",30),
+        ])
         self.CartTable.bind("<ButtonRelease-1>",self.get_data_cart)
 
         #-------------- add cart widgets frame ---------------

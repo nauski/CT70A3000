@@ -2,6 +2,7 @@ from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 from db import get_db
+from ui_helpers import create_treeview
 
 class Employee:
     def __init__(self,root):
@@ -91,39 +92,19 @@ class Employee:
         emp_frame=Frame(self.root,bd=3,relief=RIDGE)
         emp_frame.place(x=0,y=350,relwidth=1,height=150)
 
-        scrolly=Scrollbar(emp_frame,orient=VERTICAL)
-        scrollx=Scrollbar(emp_frame,orient=HORIZONTAL)\
-        
-        self.EmployeeTable=ttk.Treeview(emp_frame,columns=("eid","name","email","gender","contact","dob","doj","pass","utype","address","salary"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
-        scrollx.pack(side=BOTTOM,fill=X)
-        scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.EmployeeTable.xview)
-        scrolly.config(command=self.EmployeeTable.yview)
-        self.EmployeeTable.heading("eid",text="EMP ID")
-        self.EmployeeTable.heading("name",text="Name")
-        self.EmployeeTable.heading("email",text="Email")
-        self.EmployeeTable.heading("gender",text="Gender")
-        self.EmployeeTable.heading("contact",text="Contact")
-        self.EmployeeTable.heading("dob",text="D.O.B")
-        self.EmployeeTable.heading("doj",text="D.O.J")
-        self.EmployeeTable.heading("pass",text="Password")
-        self.EmployeeTable.heading("utype",text="User Type")
-        self.EmployeeTable.heading("address",text="Address")
-        self.EmployeeTable.heading("salary",text="Salary")
-        self.EmployeeTable["show"]="headings"
-        self.EmployeeTable.column("eid",width=90)
-        self.EmployeeTable.column("name",width=100)
-        self.EmployeeTable.column("email",width=100)
-        self.EmployeeTable.column("gender",width=100)
-        self.EmployeeTable.column("contact",width=100)
-        self.EmployeeTable.column("dob",width=100)
-        self.EmployeeTable.column("doj",width=100)
-        self.EmployeeTable.column("pass",width=100)
-        self.EmployeeTable.column("utype",width=100)
-        self.EmployeeTable.column("address",width=100)
-        self.EmployeeTable.column("salary",width=100)
-        
-        self.EmployeeTable.pack(fill=BOTH,expand=1)
+        self.EmployeeTable=create_treeview(emp_frame,[
+            ("eid","EMP ID",90),
+            ("name","Name",100),
+            ("email","Email",100),
+            ("gender","Gender",100),
+            ("contact","Contact",100),
+            ("dob","D.O.B",100),
+            ("doj","D.O.J",100),
+            ("pass","Password",100),
+            ("utype","User Type",100),
+            ("address","Address",100),
+            ("salary","Salary",100),
+        ])
         self.EmployeeTable.bind("<ButtonRelease-1>",self.get_data)
         self.show()
 #-----------------------------------------------------------------------------------------------------

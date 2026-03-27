@@ -2,6 +2,7 @@ from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 from db import get_db
+from ui_helpers import create_treeview
 
 class Product:
     def __init__(self,root):
@@ -76,31 +77,15 @@ class Product:
         product_frame=Frame(self.root,bd=3,relief=RIDGE)
         product_frame.place(x=480,y=100,width=600,height=390)
 
-        scrolly=Scrollbar(product_frame,orient=VERTICAL)
-        scrollx=Scrollbar(product_frame,orient=HORIZONTAL)\
-        
-        self.ProductTable=ttk.Treeview(product_frame,columns=("pid","Category","Supplier","name","price","qty","status"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
-        scrollx.pack(side=BOTTOM,fill=X)
-        scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.ProductTable.xview)
-        scrolly.config(command=self.ProductTable.yview)
-        self.ProductTable.heading("pid",text="P ID")
-        self.ProductTable.heading("Category",text="Category")
-        self.ProductTable.heading("Supplier",text="Suppler")
-        self.ProductTable.heading("name",text="Name")
-        self.ProductTable.heading("price",text="Price")
-        self.ProductTable.heading("qty",text="Quantity")
-        self.ProductTable.heading("status",text="Status")
-        self.ProductTable["show"]="headings"
-        self.ProductTable.column("pid",width=90)
-        self.ProductTable.column("Category",width=100)
-        self.ProductTable.column("Supplier",width=100)
-        self.ProductTable.column("name",width=100)
-        self.ProductTable.column("price",width=100)
-        self.ProductTable.column("qty",width=100)
-        self.ProductTable.column("status",width=100)
-        
-        self.ProductTable.pack(fill=BOTH,expand=1)
+        self.ProductTable=create_treeview(product_frame,[
+            ("pid","P ID",90),
+            ("Category","Category",100),
+            ("Supplier","Supplier",100),
+            ("name","Name",100),
+            ("price","Price",100),
+            ("qty","Quantity",100),
+            ("status","Status",100),
+        ])
         self.ProductTable.bind("<ButtonRelease-1>",self.get_data)
         self.show()
         self.fetch_cat_sup()

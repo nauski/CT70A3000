@@ -2,6 +2,7 @@ from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 from db import get_db
+from ui_helpers import create_treeview
 
 class Supplier:
     def __init__(self,root):
@@ -57,25 +58,12 @@ class Supplier:
         sup_frame=Frame(self.root,bd=3,relief=RIDGE)
         sup_frame.place(x=700,y=120,width=380,height=350)
 
-        scrolly=Scrollbar(sup_frame,orient=VERTICAL)
-        scrollx=Scrollbar(sup_frame,orient=HORIZONTAL)\
-        
-        self.SupplierTable=ttk.Treeview(sup_frame,columns=("invoice","name","contact","desc"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
-        scrollx.pack(side=BOTTOM,fill=X)
-        scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.SupplierTable.xview)
-        scrolly.config(command=self.SupplierTable.yview)
-        self.SupplierTable.heading("invoice",text="Invoice")
-        self.SupplierTable.heading("name",text="Name")
-        self.SupplierTable.heading("contact",text="Contact")
-        self.SupplierTable.heading("desc",text="Description")
-        self.SupplierTable["show"]="headings"
-        self.SupplierTable.column("invoice",width=90)
-        self.SupplierTable.column("name",width=100)
-        self.SupplierTable.column("contact",width=100)
-        self.SupplierTable.column("desc",width=100)
-        
-        self.SupplierTable.pack(fill=BOTH,expand=1)
+        self.SupplierTable=create_treeview(sup_frame,[
+            ("invoice","Invoice",90),
+            ("name","Name",100),
+            ("contact","Contact",100),
+            ("desc","Description",100),
+        ])
         self.SupplierTable.bind("<ButtonRelease-1>",self.get_data)
         self.show()
 #-----------------------------------------------------------------------------------------------------

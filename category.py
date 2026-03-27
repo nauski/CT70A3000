@@ -3,6 +3,7 @@ from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 import os
 from db import get_db
+from ui_helpers import create_treeview
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
@@ -31,21 +32,10 @@ class Category:
         cat_frame=Frame(self.root,bd=3,relief=RIDGE)
         cat_frame.place(x=700,y=100,width=380,height=100)
 
-        scrolly=Scrollbar(cat_frame,orient=VERTICAL)
-        scrollx=Scrollbar(cat_frame,orient=HORIZONTAL)\
-        
-        self.CategoryTable=ttk.Treeview(cat_frame,columns=("cid","name"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
-        scrollx.pack(side=BOTTOM,fill=X)
-        scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.CategoryTable.xview)
-        scrolly.config(command=self.CategoryTable.yview)
-        self.CategoryTable.heading("cid",text="C ID")
-        self.CategoryTable.heading("name",text="Name")
-        self.CategoryTable["show"]="headings"
-        self.CategoryTable.column("cid",width=90)
-        self.CategoryTable.column("name",width=100)
-        
-        self.CategoryTable.pack(fill=BOTH,expand=1)
+        self.CategoryTable=create_treeview(cat_frame,[
+            ("cid","C ID",90),
+            ("name","Name",100),
+        ])
         self.CategoryTable.bind("<ButtonRelease-1>",self.get_data)
         self.show()
 
