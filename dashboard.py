@@ -20,11 +20,13 @@ os.makedirs(BILL_DIR, exist_ok=True)
 # ---------------------------------------------------
 
 class IMS:
-    def __init__(self, root):
+    def __init__(self, root, user_name="Admin", user_role="Admin"):
         self.root = root
         self.root.geometry("1350x700+110+80")
         self.root.resizable(False, False)
         self.root.config(bg="white")
+        self.user_name = user_name
+        self.user_role = user_role
 
         # ------------- title --------------
         self.icon_title = PhotoImage(file=os.path.join(IMAGE_DIR, "logo1.png"))
@@ -42,7 +44,7 @@ class IMS:
 
         # ------------ logout button -----------
         btn_logout = Button(
-            self.root, text="Logout",
+            self.root, text="Logout", command=self.logout,
             font=("times new roman", 15, "bold"),
             bg="yellow", cursor="hand2"
         ).place(x=1150, y=10, height=50, width=150)
@@ -171,6 +173,15 @@ class IMS:
         self.update_content()
 
     # -------------- functions ----------------
+    def logout(self):
+        op = messagebox.askyesno("Confirm", "Do you really want to logout?", parent=self.root)
+        if op:
+            self.root.destroy()
+            from login import Login
+            new_root = Tk()
+            Login(new_root)
+            new_root.mainloop()
+
     def employee(self):
         self.new_win = Toplevel(self.root)
         self.new_obj = Employee(self.new_win)
@@ -227,6 +238,7 @@ class IMS:
 
 
 if __name__ == "__main__":
+    from login import Login
     root = Tk()
-    obj = IMS(root)
+    Login(root)
     root.mainloop()
