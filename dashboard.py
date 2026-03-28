@@ -183,6 +183,9 @@ class IMS:
             new_root.mainloop()
 
     def employee(self):
+        if self.user_role != "Admin":
+            messagebox.showerror("Access Denied", "Only Admins can manage employees", parent=self.root)
+            return
         self.new_win = Toplevel(self.root)
         self.new_obj = Employee(self.new_win)
 
@@ -228,7 +231,7 @@ class IMS:
             time_ = time.strftime("%I:%M:%S")
             date_ = time.strftime("%d-%m-%Y")
             self.lbl_clock.config(
-                text=f"Welcome to Inventory Management System\t\t Date: {date_}\t\t Time: {time_}"
+                text=f"Welcome {self.user_name} ({self.user_role})\t\t Date: {date_}\t\t Time: {time_}"
             )
 
             self.lbl_clock.after(200, self.update_content)
