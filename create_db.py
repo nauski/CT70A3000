@@ -8,5 +8,14 @@ def create_db():
         cur.execute("CREATE TABLE IF NOT EXISTS product(pid INTEGER PRIMARY KEY AUTOINCREMENT,Category text, Supplier text,name text,price text,qty text,status text)")
         con.commit()
 
+        # seed default admin if no employees exist yet
+        cur.execute("SELECT COUNT(*) FROM employee")
+        if cur.fetchone()[0] == 0:
+            cur.execute(
+                "INSERT INTO employee(name,email,gender,contact,dob,doj,pass,utype,address,salary) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                ("Admin", "admin@ims.com", "Male", "0000000000", "", "", "admin123", "Admin", "System", "0")
+            )
+            con.commit()
+
 
 create_db()
