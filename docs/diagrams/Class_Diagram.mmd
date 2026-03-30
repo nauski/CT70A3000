@@ -1,0 +1,253 @@
+classDiagram
+    direction TB
+
+    namespace EntryPoint {
+        class Login {
+            <<login.py>>
+            +Tk root
+            +StringVar var_email
+            +StringVar var_pass
+            +PhotoImage icon_title
+            +__init__(root)
+            +login()
+            +open_dashboard(user_name, user_role)
+        }
+    }
+
+    namespace DashboardLayer {
+        class IMS {
+            <<dashboard.py>>
+            +Tk root
+            +str user_name
+            +str user_role
+            +PhotoImage icon_title
+            +PhotoImage icon_side
+            +PhotoImage MenuLogo
+            +Label lbl_employee
+            +Label lbl_supplier
+            +Label lbl_category
+            +Label lbl_product
+            +Label lbl_sales
+            +Label lbl_clock
+            +__init__(root, user_name, user_role)
+            +logout()
+            +employee()
+            +supplier()
+            +category()
+            +product()
+            +sales()
+            +update_content()
+        }
+    }
+
+    namespace CRUDModules {
+        class Employee {
+            <<employee.py>>
+            +Toplevel root
+            +StringVar var_emp_id
+            +StringVar var_name
+            +StringVar var_email
+            +StringVar var_gender
+            +StringVar var_contact
+            +StringVar var_dob
+            +StringVar var_doj
+            +StringVar var_pass
+            +StringVar var_utype
+            +StringVar var_salary
+            +StringVar var_searchby
+            +StringVar var_searchtxt
+            +Text txt_address
+            +Treeview EmployeeTable
+            +__init__(root)
+            +add()
+            +update()
+            +delete()
+            +search()
+            +get_data(ev)
+            +show()
+            +clear()
+        }
+
+        class Supplier {
+            <<supplier.py>>
+            +Toplevel root
+            +StringVar var_sup_invoice
+            +StringVar var_name
+            +StringVar var_contact
+            +StringVar var_searchby
+            +StringVar var_searchtxt
+            +Text txt_desc
+            +Treeview SupplierTable
+            +__init__(root)
+            +add()
+            +update()
+            +delete()
+            +search()
+            +get_data(ev)
+            +show()
+            +clear()
+        }
+
+        class Category {
+            <<category.py>>
+            +Toplevel root
+            +StringVar var_cat_id
+            +StringVar var_name
+            +Treeview CategoryTable
+            +__init__(root)
+            +add()
+            +delete()
+            +get_data(ev)
+            +show()
+            +clear()
+        }
+
+        class Product {
+            <<product.py>>
+            +Toplevel root
+            +StringVar var_cat
+            +StringVar var_sup
+            +StringVar var_pid
+            +StringVar var_name
+            +StringVar var_price
+            +StringVar var_qty
+            +StringVar var_status
+            +StringVar var_searchby
+            +StringVar var_searchtxt
+            +list cat_list
+            +list sup_list
+            +Treeview ProductTable
+            +__init__(root)
+            +fetch_cat_sup()
+            +add()
+            +update()
+            +delete()
+            +search()
+            +get_data(ev)
+            +show()
+            +clear()
+        }
+    }
+
+    namespace BillingSalesLayer {
+        class Billing {
+            <<billing.py — standalone>>
+            +Tk root
+            +list cart_list
+            +int chk_print
+            +PhotoImage icon_title
+            +Label lbl_clock
+            +StringVar var_search
+            +StringVar var_cname
+            +StringVar var_contact
+            +StringVar var_cal_input
+            +StringVar var_pid
+            +StringVar var_pname
+            +StringVar var_price
+            +StringVar var_qty
+            +StringVar var_stock
+            +Treeview product_Table
+            +Treeview CartTable
+            +Text txt_bill_area
+            +Label lbl_amnt
+            +Label lbl_discount
+            +Label lbl_net_pay
+            +Label lbl_inStock
+            +Label cartTitle
+            +__init__(root)
+            +get_input(num)
+            +clear_cal()
+            +perform_cal()
+            +show()
+            +search()
+            +get_data(ev)
+            +get_data_cart(ev)
+            +add_update_cart()
+            +bill_update()
+            +show_cart()
+            +generate_bill()
+            +bill_top()
+            +bill_middle()
+            +bill_bottom()
+            +clear_cart()
+            +clear_all()
+            +update_date_time()
+            +print_bill()
+        }
+
+        class Sales {
+            <<sales.py>>
+            +Toplevel root
+            +list bill_list
+            +StringVar var_invoice
+            +Listbox Sales_List
+            +Text bill_area
+            +__init__(root)
+            +show()
+            +get_data(ev)
+            +search()
+            +clear()
+        }
+    }
+
+    namespace Infrastructure {
+        class create_db {
+            <<create_db.py — runs on import>>
+            +create_db()$ creates tables if not exist
+            +create_db()$ seeds default admin user
+        }
+
+        class get_db {
+            <<db.py>>
+            +str DB_PATH$
+            +get_db()$ yields Connection, Cursor
+        }
+
+        class create_treeview {
+            <<ui_helpers.py>>
+            +create_treeview(parent, columns)$ Treeview
+        }
+    }
+
+    Login --> IMS : authenticates, creates new Tk root
+    IMS --> Login : logout destroys root, reopens Login
+
+    IMS --> Employee : employee() opens Toplevel
+    IMS --> Supplier : supplier() opens Toplevel
+    IMS --> Category : category() opens Toplevel
+    IMS --> Product : product() opens Toplevel
+    IMS --> Sales : sales() opens Toplevel
+
+    Login ..> get_db : authenticates via
+    IMS ..> get_db : update_content()
+    Employee ..> get_db : CRUD operations
+    Supplier ..> get_db : CRUD operations
+    Category ..> get_db : CRUD operations
+    Product ..> get_db : CRUD operations
+    Billing ..> get_db : reads products, updates qty
+
+    Employee ..> create_treeview : builds EmployeeTable
+    Supplier ..> create_treeview : builds SupplierTable
+    Category ..> create_treeview : builds CategoryTable
+    Product ..> create_treeview : builds ProductTable
+    Billing ..> create_treeview : builds product_Table, CartTable
+
+    create_db ..> get_db : creates tables via
+
+    Billing --> BillDir : writes .txt invoices
+    Sales --> BillDir : reads .txt invoices
+
+    class BillDir {
+        <<bill/ directory>>
+        +txt files storing invoices
+    }
+
+    class ims_db {
+        <<ims.db>>
+        +employee table
+        +supplier table
+        +category table
+        +product table
+    }
+
+    get_db --> ims_db : connects to
